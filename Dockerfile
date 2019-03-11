@@ -188,6 +188,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
+COPY owasp-modsecurity-crs /etc/nginx/
 
 ENV APP_HOME=/var/cache/nginx
 ENV BUNDLE_IGNORE_MESSAGES="true"
@@ -195,9 +196,9 @@ WORKDIR $APP_HOME
 
 RUN apk update && apk upgrade
 RUN apk add --no-cache bash curl ipvsadm iproute2 openrc keepalived && \
-    rm -f /var/cache/apk/* /tmp/* \
-	COPY entrypoint.sh /entrypoint.sh \
-	COPY allCmnd.sh /allCmnd.sh
+    rm -f /var/cache/apk/* /tmp/* 
+COPY entrypoint.sh /entrypoint.sh 
+COPY allCmnd.sh /allCmnd.sh
 
 RUN chmod +x /entrypoint.sh
 RUN chmod +x /allCmnd.sh

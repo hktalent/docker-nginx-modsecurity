@@ -9,6 +9,10 @@ docker/
 Dockerfile
 README.md
 .git/
+.git
+.gitignore
+.gitmodules
+
 .github/
 .ruby-version
 .ruby-gemset
