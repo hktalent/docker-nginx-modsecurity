@@ -217,11 +217,11 @@ WORKDIR $APP_HOME
 # ENTRYPOINT ["/entrypoint.sh"]
 
 COPY allCmnd.sh /allCmnd.sh
-
-
 RUN chmod +x /allCmnd.sh
 
 EXPOSE 80 443
 STOPSIGNAL SIGTERM
 
-CMD ["/allCmnd.sh"]
+ENTRYPOINT ["/allCmnd.sh"]
+
+CMD ["/bin/bash"]
