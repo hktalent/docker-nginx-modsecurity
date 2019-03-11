@@ -1,6 +1,6 @@
 FROM alpine:3.8
 
-LABEL maintainer="Elisiano Petrini <elisiano@gmail.com>"
+LABEL maintainer="51pwn.com<s1pwned@gmail.com>"
 
 ENV NGINX_VERSION 1.15.3
 
@@ -188,8 +188,21 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+ENV APP_HOME=/var/cache/nginx
+ENV BUNDLE_IGNORE_MESSAGES="true"
+WORKDIR $APP_HOME
 
+RUN apk update && apk upgrade
+RUN apk add --no-cache bash curl ipvsadm iproute2 openrc keepalived && \
+    rm -f /var/cache/apk/* /tmp/* \
+	COPY entrypoint.sh /entrypoint.sh \
+	COPY allCmnd.sh /allCmnd.sh
+
+RUN chmod +x /entrypoint.sh
+RUN chmod +x /allCmnd.sh
+
+EXPOSE 80 443
 STOPSIGNAL SIGTERM
+ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/allCmnd.sh"]
