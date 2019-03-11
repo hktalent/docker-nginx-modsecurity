@@ -5,6 +5,18 @@ LABEL maintainer="51pwn.com<s1pwned@gmail.com>"
 # https://hub.docker.com/_/nginx
 ENV NGINX_VERSION 1.15.9
 
+# start haproxy，https://github.com/shubb30/haproxy-keepalived/blob/master/haproxy.cfg
+# https://hub.docker.com/r/itsthenetwork/alpine-haproxy/
+# RUN echo "http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories && \
+# apk add -U -v haproxy openssl-dev && \
+# rm -rf /var/cache/apk/* /tmp/*
+# COPY haproxy.cfg /etc/haproxy/haproxy.cfg
+# COPY errorfiles/* /etc/haproxy/
+# COPY haproxy.sh /usr/bin/haproxy.sh
+# RUN chmod +x /usr/bin/haproxy.sh
+# ENTRYPOINT ["/usr/bin/haproxy.sh"]
+# end haproxy
+
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& CONFIG="\
 		--prefix=/etc/nginx \
