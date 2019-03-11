@@ -3,6 +3,7 @@ FROM alpine:3.9.2
 LABEL maintainer="51pwn.com<s1pwned@gmail.com>"
 # https://hub.docker.com/_/alpine
 # https://hub.docker.com/_/nginx
+# https://github.com/nginxinc/docker-nginx/blob/7890fc2342613e6669ad83ceead9c81136d2cc0a/mainline/alpine/Dockerfile
 ENV NGINX_VERSION 1.15.9
 
 # start haproxy，https://github.com/shubb30/haproxy-keepalived/blob/master/haproxy.cfg
@@ -81,6 +82,8 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		gd-dev \
 		geoip-dev \
 		perl-dev \
+		bash \
+		su-exec \
 	&& apk add --no-cache --virtual .libmodsecurity-deps \
 		pcre-dev \
 		libxml2-dev \
@@ -206,17 +209,19 @@ ENV APP_HOME=/var/cache/nginx
 ENV BUNDLE_IGNORE_MESSAGES="true"
 WORKDIR $APP_HOME
 
-RUN apk update && apk upgrade
-RUN apk add --no-cache bash curl ipvsadm iproute2 openrc keepalived && \
-    rm -f /var/cache/apk/* /tmp/* 
-COPY entrypoint.sh /entrypoint.sh 
+# RUN apk update && apk upgrade
+# RUN apk add --no-cache curl ipvsadm iproute2 openrc keepalived && \
+#     rm -f /var/cache/apk/* /tmp/* 
+# COPY entrypoint.sh /entrypoint.sh 
+# RUN chmod +x /entrypoint.sh
+# ENTRYPOINT ["/entrypoint.sh"]
+
 COPY allCmnd.sh /allCmnd.sh
 
-RUN chmod +x /entrypoint.sh
+
 RUN chmod +x /allCmnd.sh
 
 EXPOSE 80 443
 STOPSIGNAL SIGTERM
-ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["/allCmnd.sh"]
