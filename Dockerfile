@@ -83,7 +83,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		geoip-dev \
 		perl-dev \
 		bash \
-		su-exec \
 	&& apk add --no-cache --virtual .libmodsecurity-deps \
 		pcre-dev \
 		libxml2-dev \
