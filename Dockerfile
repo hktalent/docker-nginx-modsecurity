@@ -1,8 +1,9 @@
-FROM alpine:3.8
+FROM alpine:3.9.2
 
 LABEL maintainer="51pwn.com<s1pwned@gmail.com>"
-
-ENV NGINX_VERSION 1.15.3
+# https://hub.docker.com/_/alpine
+# https://hub.docker.com/_/nginx
+ENV NGINX_VERSION 1.15.9
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& CONFIG="\
