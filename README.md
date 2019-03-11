@@ -1,6 +1,6 @@
 # NGINX with libModSecurity + ModSecurity-nginx + Keepalived +  connector
 
-git submodule add git@github.com:SpiderLabs/owasp-modsecurity-crs.git ./owasp-modsecurity-crs
+git submodule add https://github.com/SpiderLabs/owasp-modsecurity-crs
 
 The dockerfile of this container has been copied from the [official nginx repo (alpine-perl variant)](https://github.com/nginxinc/docker-nginx/blob/1.15.3/mainline/alpine-perl/Dockerfile) and has been modified to add [ModSecurity library (v3)](https://github.com/SpiderLabs/ModSecurity/tree/v3/master) + [ModSecurity nginx connector](https://github.com/SpiderLabs/ModSecurity-nginx).
 

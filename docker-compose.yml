@@ -1,5 +1,7 @@
 version: "3"
 services:
+  # https://github.com/rapid7/metasploit-framework/tree/master/docker
+  # https://github.com/rapid7/metasploit-framework/blob/master/docker-compose.yml
   nginx_master:
     build:
       context: ./
