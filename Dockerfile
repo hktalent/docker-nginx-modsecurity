@@ -63,6 +63,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--with-mail_ssl_module \
 		--with-compat \
 		--with-file-aio \
+		--with-openssl=../openssl \
 		--with-http_v2_module \
 		--add-module=/usr/src/ModSecurity-nginx \
 		--add-module=/usr/src/ngx_brotli \
@@ -101,6 +102,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		yajl \
 		libstdc++ \
 	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
+	&& curl -fSL https://github.com/openssl/openssl/archive/OpenSSL_1_1_1.tar.gz -o OpenSSL_1_1_1.tar.gz \
 	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
 	&& export GNUPGHOME="$(mktemp -d)" \
 	&& found=''; \
@@ -118,8 +120,20 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& rm -rf "$GNUPGHOME" nginx.tar.gz.asc \
 	&& mkdir -p /usr/src \
 	&& tar -zxC /usr/src -f nginx.tar.gz \
+	&& tar -zxC /usr/src -f OpenSSL_1_1_1.tar.gz \
+	&& rm OpenSSL_1_1_1.tar.gz \
 	&& rm nginx.tar.gz \
 	&& cd /usr/src \
+	&& git clone https://github.com/grahamedgecombe/nginx-ct \
+	&& cd nginx-ct \
+	&& git submodule init \
+	&& git submodule update \
+	&& cd .. \
+	&& git clone https://github.com/google/ngx_brotli \
+	&& cd ngx_brotli \
+	&& git submodule init \
+	&& git submodule update \
+	&& cd .. \
 	&& git clone https://github.com/SpiderLabs/ModSecurity \
 	&& cd ModSecurity \
 	&& git checkout v3/master \
@@ -200,16 +214,22 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	\
 	# forward request and error logs to docker log collector
 	&& ln -sf /dev/stdout /var/log/nginx/access.log \
-	&& ln -sf /dev/stderr /var/log/nginx/error.log
+	&& ln -sf /dev/stderr /var/log/nginx/error.log \
+	cd /etc/nginx/ \
+	&& git clone https://github.com/SpiderLabs/owasp-modsecurity-crs \
+	&& cd owasp-modsecurity-crs \
+	&& git submodule init \
+	&& git submodule update
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
-COPY owasp-modsecurity-crs /etc/nginx/
+# COPY owasp-modsecurity-crs /etc/nginx/
 
 ENV APP_HOME=/var/cache/nginx
 ENV BUNDLE_IGNORE_MESSAGES="true"
 WORKDIR $APP_HOME
 
+# 用nginx转发，就暂且不用keepalived
 # RUN apk update && apk upgrade
 # RUN apk add --no-cache curl ipvsadm iproute2 openrc keepalived && \
 #     rm -f /var/cache/apk/* /tmp/* 
