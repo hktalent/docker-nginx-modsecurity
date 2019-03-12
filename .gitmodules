@@ -4,3 +4,6 @@
 [submodule "nginx-ct"]
 	path = nginx-ct
 	url = https://github.com/grahamedgecombe/nginx-ct
+[submodule "ngx_brotli"]
+	path = ngx_brotli
+	url = https://github.com/google/ngx_brotli

@@ -65,6 +65,8 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--with-file-aio \
 		--with-http_v2_module \
 		--add-module=/usr/src/ModSecurity-nginx \
+		--add-module=/usr/src/ngx_brotli \
+		--add-module=/usr/src/nginx-ct \
 	" \
 	&& addgroup -S nginx \
 	&& adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \
