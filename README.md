@@ -1,5 +1,6 @@
 # NGINX with libModSecurity + ModSecurity-nginx +  connector
 ```
+# already add to Dockerfile
 git submodule add https://github.com/SpiderLabs/owasp-modsecurity-crs
 git submodule add https://github.com/grahamedgecombe/nginx-ct
 cd nginx-ct
@@ -24,9 +25,9 @@ mkdir /mytools
 cd /mytools/
 git clone https://github.com/hktalent/docker-nginx-modsecurity
 cd /mytools/docker-nginx-modsecurity
-git submodule update --remote
+docker build --cache-from alpine:3.9.2 -t mtx_alpine_nginx_modsecurity .
+docker build --cache-from alpine:3.9.2 -t mtx_alpine_nginx_modsecurity https://github.com/hktalent/docker-nginx-modsecurity
 
-docker build -t mtx_alpine_nginx_modsecurity .
 
 ```
 

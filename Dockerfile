@@ -63,7 +63,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--with-mail_ssl_module \
 		--with-compat \
 		--with-file-aio \
-		--with-openssl=../openssl \
+		--with-openssl=/usr/src/openssl \
 		--with-http_v2_module \
 		--add-module=/usr/src/ModSecurity-nginx \
 		--add-module=/usr/src/ngx_brotli \
@@ -75,6 +75,8 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		gcc \
 		libc-dev \
 		make \
+		file \
+		doxygen \
 		openssl-dev \
 		pcre-dev \
 		zlib-dev \
@@ -121,6 +123,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& mkdir -p /usr/src \
 	&& tar -zxC /usr/src -f nginx.tar.gz \
 	&& tar -zxC /usr/src -f OpenSSL_1_1_1.tar.gz \
+	&& mv /usr/src/openssl-OpenSSL_1_1_1 /usr/src/openssl \
 	&& rm OpenSSL_1_1_1.tar.gz \
 	&& rm nginx.tar.gz \
 	&& cd /usr/src \
@@ -216,10 +219,10 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log \
 	cd /etc/nginx/ \
-	&& git clone https://github.com/SpiderLabs/owasp-modsecurity-crs \
-	&& cd owasp-modsecurity-crs \
-	&& git submodule init \
-	&& git submodule update
+	&& git clone https://github.com/SpiderLabs/owasp-modsecurity-crs
+	# && cd owasp-modsecurity-crs \
+	# && git submodule init \
+	# && git submodule update
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
