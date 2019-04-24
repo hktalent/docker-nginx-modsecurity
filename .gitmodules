@@ -1,6 +1,6 @@
 [submodule "owasp-modsecurity-crs"]
 	path = owasp-modsecurity-crs
-	url = https://github.com/SpiderLabs/owasp-modsecurity-crs/tree/v3.2/dev
+	url = https://github.com/SpiderLabs/owasp-modsecurity-crs
 [submodule "nginx-ct"]
 	path = nginx-ct
 	url = https://github.com/grahamedgecombe/nginx-ct
