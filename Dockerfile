@@ -17,6 +17,16 @@ ENV NGINX_VERSION 1.15.9
 # RUN chmod +x /usr/bin/haproxy.sh
 # ENTRYPOINT ["/usr/bin/haproxy.sh"]
 # end haproxy
+RUN mkdir -p /usr/src && mkdir -p /etc/nginx && mkdir -p /etc/nginx/conf.d
+COPY ngx_brotli \
+	nginx-ct \
+	ModSecurity-nginx \
+	ModSecurity \
+	/usr/src/
+COPY owasp-modsecurity-crs \
+	nginx.conf \
+	/etc/nginx/
+COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& CONFIG="\
@@ -127,21 +137,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& rm OpenSSL_1_1_1.tar.gz \
 	&& rm nginx.tar.gz \
 	&& cd /usr/src \
-	&& git clone https://github.com/grahamedgecombe/nginx-ct \
-	&& cd nginx-ct \
-	&& git submodule init \
-	&& git submodule update \
-	&& cd .. \
-	&& git clone https://github.com/google/ngx_brotli \
-	&& cd ngx_brotli \
-	&& git submodule init \
-	&& git submodule update \
-	&& cd .. \
-	&& git clone https://github.com/SpiderLabs/ModSecurity \
-	&& cd ModSecurity \
-	&& git checkout v3/master \
-	&& git submodule init \
-	&& git submodule update \
 	&& sed -i -e 's/u_int64_t/uint64_t/g' \
 		./src/actions/transformations/html_entity_decode.cc \
 		./src/actions/transformations/html_entity_decode.h \
@@ -218,14 +213,9 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	# forward request and error logs to docker log collector
 	&& ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log \
-	&& cd /etc/nginx/ \
-	&& git clone https://github.com/SpiderLabs/owasp-modsecurity-crs
-	# && cd owasp-modsecurity-crs \
-	# && git submodule init \
-	# && git submodule update
+	
 
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
+
 # COPY owasp-modsecurity-crs /etc/nginx/
 
 ENV APP_HOME=/var/cache/nginx
