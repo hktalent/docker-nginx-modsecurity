@@ -1,4 +1,4 @@
-FROM alpine:3.9.2
+FROM alpine
 
 LABEL maintainer="51pwn.com<s1pwned@gmail.com>"
 # https://hub.docker.com/_/alpine
@@ -218,7 +218,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	# forward request and error logs to docker log collector
 	&& ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log \
-	cd /etc/nginx/ \
+	&& cd /etc/nginx/ \
 	&& git clone https://github.com/SpiderLabs/owasp-modsecurity-crs
 	# && cd owasp-modsecurity-crs \
 	# && git submodule init \

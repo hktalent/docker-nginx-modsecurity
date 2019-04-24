@@ -1,6 +1,7 @@
 # NGINX with libModSecurity + ModSecurity-nginx +  connector
 ```
 # already add to Dockerfile
+git submodule update --init
 git submodule add https://github.com/SpiderLabs/owasp-modsecurity-crs
 git submodule add https://github.com/grahamedgecombe/nginx-ct
 cd nginx-ct
