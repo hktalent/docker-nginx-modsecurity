@@ -17,7 +17,8 @@ ENV NGINX_VERSION 1.15.9
 # RUN chmod +x /usr/bin/haproxy.sh
 # ENTRYPOINT ["/usr/bin/haproxy.sh"]
 # end haproxy
-RUN mkdir -p /usr/src && mkdir -p /etc/nginx && mkdir -p /etc/nginx/conf.d
+RUN mkdir -p /usr/src && mkdir -p /etc/nginx && mkdir -p /etc/nginx/conf.d \
+	apk update && apk upgrade
 COPY ngx_brotli \
 	nginx-ct \
 	ModSecurity-nginx \
@@ -28,7 +29,8 @@ COPY owasp-modsecurity-crs \
 	/etc/nginx/
 COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
 
-RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
+RUN find /usr/src -type d -name ".git"|xargs -I % rm -rf {} % \
+	GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& CONFIG="\
 		--prefix=/etc/nginx \
 		--sbin-path=/usr/sbin/nginx \
@@ -130,7 +132,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	test -z "$found" && echo >&2 "error: failed to fetch GPG key $GPG_KEYS" && exit 1; \
 	gpg --batch --verify nginx.tar.gz.asc nginx.tar.gz \
 	&& rm -rf "$GNUPGHOME" nginx.tar.gz.asc \
-	&& mkdir -p /usr/src \
 	&& tar -zxC /usr/src -f nginx.tar.gz \
 	&& tar -zxC /usr/src -f OpenSSL_1_1_1.tar.gz \
 	&& mv /usr/src/openssl-OpenSSL_1_1_1 /usr/src/openssl \
@@ -150,13 +151,11 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		./src/actions/transformations/parity_zero_7bit.h \
 		./src/actions/transformations/remove_comments.cc \
 		./src/actions/transformations/url_decode_uni.cc \
-		./src/actions/transformations/url_decode_uni.h \
-	&& sh build.sh \
+		./src/actions/transformations/url_decode_uni.h
+RUN sh build.sh \
 	&& ./configure \
 	&& make \
 	&& make install \
-	&& cd /usr/src \
-	&& git clone https://github.com/SpiderLabs/ModSecurity-nginx \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
 	&& ./configure $CONFIG --with-debug \
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
@@ -212,11 +211,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	\
 	# forward request and error logs to docker log collector
 	&& ln -sf /dev/stdout /var/log/nginx/access.log \
-	&& ln -sf /dev/stderr /var/log/nginx/error.log \
-	
-
-
-# COPY owasp-modsecurity-crs /etc/nginx/
+	&& ln -sf /dev/stderr /var/log/nginx/error.log
 
 ENV APP_HOME=/var/cache/nginx
 ENV BUNDLE_IGNORE_MESSAGES="true"
