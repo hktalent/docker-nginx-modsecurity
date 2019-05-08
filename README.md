@@ -18,6 +18,8 @@ cd /mytools/
 git clone https://github.com/hktalent/docker-nginx-modsecurity
 cd /mytools/docker-nginx-modsecurity
 docker build --cache-from alpine -t mtx_alpine_nginx_modsecurity .
+docker build --cache-from bb5f4a39d2a7 -t mtx_alpine_nginx_modsecurity .
+
 docker build --cache-from alpine:3.9.2 -t mtx_alpine_nginx_modsecurity https://github.com/hktalent/docker-nginx-modsecurity
 
 
