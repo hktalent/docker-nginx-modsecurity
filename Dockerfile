@@ -21,6 +21,9 @@ RUN mkdir -p /usr/src && mkdir -p /etc/nginx && mkdir -p /etc/nginx/conf.d \
 	apk update && apk upgrade
 COPY ngx_brotli /usr/src/
 COPY nginx-ct /usr/src/
+COPY nginx.tar.gz.asc /usr/src/
+COPY nginx.tar.gz /usr/src/
+COPY OpenSSL_1_1_1.tar.gz /usr/src/
 COPY ModSecurity-nginx /usr/src/
 COPY ModSecurity /usr/src/
 COPY owasp-modsecurity-crs /etc/nginx/
@@ -114,9 +117,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& apk add --no-cache \
 		yajl \
 		libstdc++ \
-	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
-	&& curl -fSL https://github.com/openssl/openssl/archive/OpenSSL_1_1_1.tar.gz -o OpenSSL_1_1_1.tar.gz \
-	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
+	&& cd /usr/src/ \
 	&& export GNUPGHOME="$(mktemp -d)" \
 	&& found=''; \
 	for server in \
