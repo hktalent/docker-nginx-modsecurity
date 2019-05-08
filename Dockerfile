@@ -26,10 +26,13 @@ COPY nginx.tar.gz.asc /usr/src/
 COPY nginx.tar.gz /usr/src/
 COPY OpenSSL_1_1_1.tar.gz /usr/src/
 COPY ModSecurity-nginx /usr/src/
+COPY zlib1211.zip /usr/src/
 COPY ModSecurity /usr/src/
 COPY owasp-modsecurity-crs /etc/nginx/
 COPY nginx.conf /etc/nginx/
 COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
+
+# https://phoenixnap.dl.sourceforge.net/project/libpng/zlib/1.2.11/zlib1211.zip
 
 # find /usr/src -type d -name ".git"|xargs -I % rm -rf {} % \
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
@@ -68,16 +71,20 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--with-http_perl_module=dynamic \
 		--with-threads \
 		--with-stream \
+		--with-ipv6 \
 		--with-stream_ssl_module \
 		--with-stream_ssl_preread_module \
 		--with-stream_realip_module \
 		--with-stream_geoip_module=dynamic \
 		--with-http_slice_module \
+		--with-http_spdy_module \
 		--with-mail \
+		--with-openssl-opt=no-krb5 \
 		--with-mail_ssl_module \
 		--with-compat \
 		--with-file-aio \
 		--with-openssl=/usr/src/openssl \
+		--with-zlib=/usr/src/zlib-1.2.11 \
 		--with-http_v2_module \
 		--add-module=/usr/src/ModSecurity-nginx \
 		--add-module=/usr/src/ngx_brotli \
@@ -116,9 +123,11 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	# Add runtime dependencies that should not be removed
 	&& apk add --no-cache \
 		yajl \
+		unzip \
 		libstdc++ \
 	&& export GNUPGHOME="$(mktemp -d)" \
 	&& cd /usr/src/ \
+	&& unzip zlib1211.zip \
 	found=''; \
 	for server in \
 		ha.pool.sks-keyservers.net \

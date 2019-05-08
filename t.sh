@@ -17,4 +17,4 @@ docker images|grep none|awk '{print $3}'|xargs docker rmi
 
 /usr/sbin/nginx -t
 
-git commit -m "add 常用脚本" .;git push
+git commit -m "add spdy zlib1211" .;git push
