@@ -134,9 +134,9 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& tar -zxC /usr/src -f nginx.tar.gz \
 	&& tar -zxC /usr/src -f OpenSSL_1_1_1.tar.gz \
 	&& mv /usr/src/openssl-OpenSSL_1_1_1 /usr/src/openssl \
-	# && rm OpenSSL_1_1_1.tar.gz \
-	# && rm nginx.tar.gz \
-	# && rm -rf "$GNUPGHOME" nginx.tar.gz.asc \
+	&& rm OpenSSL_1_1_1.tar.gz \
+	&& rm nginx.tar.gz \
+	&& rm -rf "$GNUPGHOME" nginx.tar.gz.asc \
 	cd /usr/src/ModSecurity \
 	&& sed -i -e 's/u_int64_t/uint64_t/g' \
 		./src/actions/transformations/html_entity_decode.cc \
@@ -152,7 +152,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		./src/actions/transformations/remove_comments.cc \
 		./src/actions/transformations/url_decode_uni.cc \
 		./src/actions/transformations/url_decode_uni.h \
-	# && find ../ -type d -name ".git" -exec rm -rf {} \\;\
     sh build.sh \
 	&& ./configure \
 	&& make \
@@ -209,7 +208,8 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& apk add --no-cache tzdata \
 	# forward request and error logs to docker log collector
 	&& mkdir -p /var/log/nginx && ln -sf /dev/stdout /var/log/nginx/access.log \
-	&& ln -sf /dev/stderr /var/log/nginx/error.log
+	&& ln -sf /dev/stderr /var/log/nginx/error.log \
+	&& cp /etc/nginx/owasp-modsecurity-crs/crs-setup.conf.example  /etc/nginx/owasp-modsecurity-crs/crs-setup.conf
 
 ENV APP_HOME=/var/cache/nginx
 ENV BUNDLE_IGNORE_MESSAGES="true"
