@@ -15,6 +15,8 @@ docker cp OpenSSL_1_1_1.tar.gz $tmpC2:/usr/src/
 docker ps -a|grep "/bin/sh -c"|grep -v "openvas9"|awk '{print $1}'|xargs docker rm
 docker images|grep none|awk '{print $3}'|xargs docker rmi
 
+docker build --cache-from alpine -t mtx_alpine_nginx_modsecurity .
+
 /usr/sbin/nginx -t
 
 git commit -m "add spdy zlib1211" .;git push
