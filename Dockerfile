@@ -29,8 +29,8 @@ COPY owasp-modsecurity-crs \
 	/etc/nginx/
 COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
 
-RUN find /usr/src -type d -name ".git"|xargs -I % rm -rf {} % \
-	GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
+# find /usr/src -type d -name ".git"|xargs -I % rm -rf {} % \
+RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& CONFIG="\
 		--prefix=/etc/nginx \
 		--sbin-path=/usr/sbin/nginx \
@@ -137,7 +137,7 @@ RUN find /usr/src -type d -name ".git"|xargs -I % rm -rf {} % \
 	&& mv /usr/src/openssl-OpenSSL_1_1_1 /usr/src/openssl \
 	&& rm OpenSSL_1_1_1.tar.gz \
 	&& rm nginx.tar.gz \
-	&& cd /usr/src \
+	&& cd /usr/src/ModSecurity \
 	&& sed -i -e 's/u_int64_t/uint64_t/g' \
 		./src/actions/transformations/html_entity_decode.cc \
 		./src/actions/transformations/html_entity_decode.h \
@@ -152,7 +152,8 @@ RUN find /usr/src -type d -name ".git"|xargs -I % rm -rf {} % \
 		./src/actions/transformations/remove_comments.cc \
 		./src/actions/transformations/url_decode_uni.cc \
 		./src/actions/transformations/url_decode_uni.h
-RUN sh build.sh \
+RUN find ../ -type d -name ".git" -exec rm -rf {} \;\
+    sh build.sh \
 	&& ./configure \
 	&& make \
 	&& make install \
@@ -169,7 +170,6 @@ RUN sh build.sh \
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
 	&& make install \
 	&& rm -rf /etc/nginx/html/ \
-	&& mkdir /etc/nginx/conf.d/ \
 	&& mkdir -p /usr/share/nginx/html/ \
 	&& install -m644 html/index.html /usr/share/nginx/html/ \
 	&& install -m644 html/50x.html /usr/share/nginx/html/ \
@@ -182,7 +182,7 @@ RUN sh build.sh \
 	&& ln -s ../../usr/lib/nginx/modules /etc/nginx/modules \
 	&& strip /usr/sbin/nginx* \
 	&& strip /usr/lib/nginx/modules/*.so \
-	&& rm -rf /usr/src/nginx-$NGINX_VERSION \
+	&& cd /usr/src && rm -rf /usr/src/nginx-$NGINX_VERSION \
 	\
 	# Bring in gettext so we can get `envsubst`, then throw
 	# the rest away. To do this, we need to install `gettext`
