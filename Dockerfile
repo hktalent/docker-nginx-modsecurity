@@ -19,14 +19,13 @@ ENV NGINX_VERSION 1.15.9
 # end haproxy
 RUN mkdir -p /usr/src && mkdir -p /etc/nginx && mkdir -p /etc/nginx/conf.d \
 	apk update && apk upgrade
-COPY ngx_brotli \
-	nginx-ct \
-	ModSecurity-nginx \
-	ModSecurity \
-	/usr/src/
-COPY owasp-modsecurity-crs \
-	nginx.conf \
-	/etc/nginx/
+COPY ngx_brotli /usr/src/
+COPY nginx-ct /usr/src/
+COPY ModSecurity-nginx /usr/src/
+COPY ModSecurity /usr/src/
+COPY owasp-modsecurity-crs /etc/nginx/
+COPY nginx.conf /etc/nginx/
+
 COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
 
 # find /usr/src -type d -name ".git"|xargs -I % rm -rf {} % \
