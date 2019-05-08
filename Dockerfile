@@ -125,7 +125,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		yajl \
 		unzip \
 		libstdc++ \
-	&& export GNUPGHOME="$(mktemp -d)" \
 	&& cd /usr/src/ \
 	&& unzip zlib1211.zip \
 	&& found=''; \
@@ -145,7 +144,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& mv /usr/src/openssl-OpenSSL_1_1_1 /usr/src/openssl \
 	&& rm OpenSSL_1_1_1.tar.gz \
 	&& rm nginx.tar.gz \
-	&& rm -rf "$GNUPGHOME" nginx.tar.gz.asc \
+	&& rm -rf  nginx.tar.gz.asc \
 	cd /usr/src/ModSecurity \
 	&& sed -i -e 's/u_int64_t/uint64_t/g' \
 		./src/actions/transformations/html_entity_decode.cc \
