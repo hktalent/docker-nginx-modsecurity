@@ -1,5 +1,5 @@
 docker run -it 5cb3aa00f899 /bin/sh
-tmpC2="f8fa4894a145"
+tmpC2=`docker ps -a|grep 5cb3aa00f899|grep "Up "|awk '{print $1}'`
 docker cp ngx_brotli $tmpC2:/usr/src/
 docker cp nginx-ct $tmpC2:/usr/src/
 docker cp ModSecurity-nginx $tmpC2:/usr/src/
