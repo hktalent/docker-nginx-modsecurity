@@ -20,13 +20,15 @@ ENV GPG_KEYS B0F4253373F8F6F510D42178520A9993A1C052F8
 # end haproxy
 RUN mkdir -p /usr/src && mkdir -p /etc/nginx && mkdir -p /etc/nginx/conf.d \
 	apk update && apk upgrade
-COPY ngx_brotli /usr/src/
+
+# --add-module=/usr/src/ngx_brotli \	
+# COPY ngx_brotli /usr/src/
 COPY nginx-ct /usr/src/
 COPY nginx.tar.gz.asc /usr/src/
 COPY nginx.tar.gz /usr/src/
 COPY OpenSSL_1_1_1.tar.gz /usr/src/
 COPY ModSecurity-nginx /usr/src/
-COPY zlib1211.zip /usr/src/
+# COPY zlib1211.zip /usr/src/
 COPY ModSecurity /usr/src/
 COPY owasp-modsecurity-crs /etc/nginx/
 COPY nginx.conf /etc/nginx/
@@ -77,17 +79,12 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--with-stream_realip_module \
 		--with-stream_geoip_module=dynamic \
 		--with-http_slice_module \
-		--with-http_spdy_module \
 		--with-mail \
-		--with-openssl-opt=no-krb5 \
 		--with-mail_ssl_module \
 		--with-compat \
 		--with-file-aio \
 		--with-openssl=/usr/src/openssl \
-		--with-zlib=/usr/src/zlib-1.2.11 \
-		--with-http_v2_module \
 		--add-module=/usr/src/ModSecurity-nginx \
-		--add-module=/usr/src/ngx_brotli \
 		--add-module=/usr/src/nginx-ct \
 	" \
 	&& addgroup -S nginx \
@@ -120,13 +117,12 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		flex \
 		bison \
 		yajl-dev \
-	# Add runtime dependencies that should not be removed
 	&& apk add --no-cache \
 		yajl \
 		unzip \
 		libstdc++ \
 	&& cd /usr/src/ \
-	&& unzip zlib1211.zip \
+	# && unzip zlib1211.zip \
 	&& found=''; \
 	for server in \
 		ha.pool.sks-keyservers.net \
@@ -211,8 +207,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& apk del .gettext \
 	&& mv /tmp/envsubst /usr/local/bin/ \
 	&& rm -rf /usr/src/ModSecurity /usr/src/ModSecurity-nginx \
-	# Bring in tzdata so users could set the timezones through the environment
-	# variables
 	&& apk add --no-cache tzdata \
 	# forward request and error logs to docker log collector
 	&& mkdir -p /var/log/nginx && ln -sf /dev/stdout /var/log/nginx/access.log \

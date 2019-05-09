@@ -10,6 +10,7 @@ docker cp nginx.vh.default.conf $tmpC2:/etc/nginx/conf.d/default.conf
 docker cp nginx.tar.gz.asc $tmpC2:/usr/src/
 docker cp nginx.tar.gz $tmpC2:/usr/src/
 docker cp OpenSSL_1_1_1.tar.gz $tmpC2:/usr/src/
+docker cp zlib1211.zip $tmpC2:/usr/src/
 
 
 docker ps -a|grep "/bin/sh -c"|grep -v "openvas9"|awk '{print $1}'|xargs docker rm
